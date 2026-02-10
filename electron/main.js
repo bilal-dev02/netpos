@@ -121,11 +121,11 @@ function startNextServer() {
         ? [nextBin, 'start', '-p', PORT.toString()]
         : ['start', '-p', PORT.toString()],
       {
-        cwd: dataPath, // Run from user data directory
+        cwd: appPath, // Run from app directory where .next folder exists
         env: { 
           ...process.env, 
           NODE_ENV: 'production',
-          USER_DATA_PATH: dataPath // Pass to Next.js
+          USER_DATA_PATH: dataPath // Pass to Next.js for database/uploads
         },
         stdio: 'pipe'
       }

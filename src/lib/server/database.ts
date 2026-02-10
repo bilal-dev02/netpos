@@ -6,9 +6,9 @@ import fs from 'fs';
 import type { Product, User, Order, AttendanceLog, BreakLog, DeliveryStatus, DemandNotice, DemandNoticeStatus, TaxSetting, GlobalDiscountSetting, Permission, OrderItem, PaymentDetail, ReturnTransactionInfo, CommissionSetting, SeriesNumberSetting, AttendanceSetting, Quotation, QuotationItem, SeriesId, Audit, AuditItem, AuditItemCount, AuditImage, Supplier, PurchaseOrder, POItem, POAttachment } from '@/types';
 import { INITIAL_PRODUCTS, INITIAL_USERS, INITIAL_ORDERS, INITIAL_DEMAND_NOTICES, INITIAL_TAX_SETTINGS, INITIAL_GLOBAL_DISCOUNT_SETTING, INITIAL_COMMISSION_SETTING, INITIAL_INVOICE_NUMBER_SETTING, INITIAL_QUOTATION_NUMBER_SETTING, INITIAL_DEMAND_NOTICE_NUMBER_SETTING, INITIAL_ATTENDANCE_SETTING, INITIAL_AUDIT_NUMBER_SETTING } from '@/lib/constants';
 import { format, isValid, parseISO } from 'date-fns';
+import { getDatabasePath } from '@/lib/server/paths';
 
-const DB_FILE_NAME = 'netpos.db';
-const DB_PATH = path.join(process.cwd(), DB_FILE_NAME);
+const DB_PATH = getDatabasePath();
 
 let db: Database | null = null;
 let isDbInitializing = false; // Mutex for initialization

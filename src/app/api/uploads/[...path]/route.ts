@@ -3,10 +3,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 import { stat } from 'fs/promises'; // Use fs.promises.stat
+import { getUploadsPath } from '@/lib/server/paths';
 
 // Define allowed base directories for security
 const ALLOWED_BASE_DIRECTORIES = [
-  path.join(process.cwd(), 'uploads'),
+  getUploadsPath(),
   // Add other base directories if needed, e.g., for special system files not in 'uploads'
 ];
 
@@ -34,7 +35,7 @@ export async function GET(req: NextRequest, { params }: { params: { path: string
   try {
     // Construct the relative path from the params
     const relativePath = params.path.join('/');
-    const filePath = path.join(process.cwd(), 'uploads', relativePath);
+    const filePath = getUploadsPath(relativePath);
 
     // Security Check: Ensure the resolved path is within an allowed directory
     const resolvedFilePath = path.resolve(filePath);
