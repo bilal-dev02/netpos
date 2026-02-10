@@ -1,0 +1,39 @@
+Node Js Install 
+
+pip install npm
+
+open the bash in project directory
+
+Get-ExecutionPolicy
+
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+
+node -v
+npm -v
+
+npm install
+
+Clean your node_modules and lock file:
+
+Delete the node_modules folder.
+Delete your package-lock.json
+
+Reinstall dependencies:
+
+Run npm install
+
+npm audit fix --force
+
+npm install sqlite3@5.1.6
+
+npm run recreate-db
+
+run npm rebuild sqlite3 --build-from-source
+
+npm run build
+
+npm run start
+
+npm run dev
+
