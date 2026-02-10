@@ -101,10 +101,6 @@ function copyDirectoryRecursive(source, target) {
 // Function to start Next.js server
 function startNextServer() {
   return new Promise((resolve, reject) => {
-    const nextBin = isDev 
-      ? path.join(__dirname, '..', 'node_modules', '.bin', 'next')
-      : path.join(process.resourcesPath, 'app', 'node_modules', '.bin', 'next');
-
     const appPath = isDev 
       ? path.join(__dirname, '..')
       : path.join(process.resourcesPath, 'app');
@@ -115,25 +111,26 @@ function startNextServer() {
     console.log('App path:', appPath);
     console.log('Data will be stored in:', dataPath);
 
-    nextServer = spawn(
-      process.platform === 'win32' ? 'node' : nextBin,
-      process.platform === 'win32' 
-        ? [nextBin, 'start', '-p', PORT.toString()]
-        : ['start', '-p', PORT.toString()],
-      {
-        cwd: appPath, // Run from app directory where .next folder exists
-        env: { 
-          ...process.env, 
-          NODE_ENV: 'production',
-          USER_DATA_PATH: dataPath // Pass to Next.js for database/uploads
-        },
-        stdio: 'pipe'
-      }
-    );
+    // In development, run 'npm run dev', in production run Next.js directly
+    const command = isDev ? 'npm' : (process.platform === 'win32' ? 'npx.cmd' : 'npx');
+    const args = isDev 
+      ? ['run', 'dev']
+      : ['next', 'start', '-p', PORT.toString()];
+
+    nextServer = spawn(command, args, {
+      cwd: appPath, // Run from app directory where .next folder exists
+      env: { 
+        ...process.env, 
+        NODE_ENV: isDev ? 'development' : 'production',
+        USER_DATA_PATH: dataPath // Pass to Next.js for database/uploads
+      },
+      stdio: 'pipe',
+      shell: true // Use shell to handle npm/npx properly on Windows
+    });
 
     nextServer.stdout.on('data', (data) => {
       console.log(`Next.js: ${data}`);
-      if (data.toString().includes('Ready') || data.toString().includes('started')) {
+      if (data.toString().includes('Ready') || data.toString().includes('started') || data.toString().includes('Local:')) {
         resolve();
       }
     });
@@ -147,8 +144,8 @@ function startNextServer() {
       reject(error);
     });
 
-    // Resolve after 5 seconds as fallback
-    setTimeout(() => resolve(), 5000);
+    // Resolve after 8 seconds as fallback
+    setTimeout(() => resolve(), 8000);
   });
 }
 
