@@ -1,6 +1,7 @@
 {
   "appId": "com.netpos.retail",
   "productName": "NetPOS",
+  "publish": null,
   "directories": {
     "output": "dist-electron",
     "buildResources": "electron/resources"
