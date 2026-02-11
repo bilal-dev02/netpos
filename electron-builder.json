@@ -2,15 +2,16 @@
   "appId": "com.netpos.retail",
   "productName": "NetPOS",
   "publish": null,
+  "asar": false,
   "directories": {
     "output": "dist-electron",
     "buildResources": "electron/resources"
   },
   "files": [
-    ".next/**/*",
+    ".next/standalone/**/*",
+    ".next/static/**/*",
     "public/**/*",
     "uploads/**/*",
-    "node_modules/**/*",
     "package.json",
     "next.config.js",
     "electron/main.js",

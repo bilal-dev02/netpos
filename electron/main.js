@@ -111,22 +111,42 @@ function startNextServer() {
     console.log('App path:', appPath);
     console.log('Data will be stored in:', dataPath);
 
-    // In development, run 'npm run dev', in production run Next.js directly
-    const command = isDev ? 'npm' : (process.platform === 'win32' ? 'npx.cmd' : 'npx');
-    const args = isDev 
-      ? ['run', 'dev']
-      : ['next', 'start', '-p', PORT.toString()];
+    // In development, run 'npm run dev', in production run standalone server
+    if (isDev) {
+      const command = 'npm';
+      const args = ['run', 'dev'];
 
-    nextServer = spawn(command, args, {
-      cwd: appPath, // Run from app directory where .next folder exists
-      env: { 
-        ...process.env, 
-        NODE_ENV: isDev ? 'development' : 'production',
-        USER_DATA_PATH: dataPath // Pass to Next.js for database/uploads
-      },
-      stdio: 'pipe',
-      shell: true // Use shell to handle npm/npx properly on Windows
-    });
+      nextServer = spawn(command, args, {
+        cwd: appPath,
+        env: { 
+          ...process.env, 
+          NODE_ENV: 'development',
+          USER_DATA_PATH: dataPath
+        },
+        stdio: 'pipe',
+        shell: true
+      });
+    } else {
+      // Production: use standalone server
+      const serverPath = path.join(appPath, '.next', 'standalone', 'server.js');
+      
+      if (!fs.existsSync(serverPath)) {
+        reject(new Error('Standalone server not found. Did you run "npm run build"?'));
+        return;
+      }
+
+      nextServer = spawn('node', [serverPath], {
+        cwd: path.join(appPath, '.next', 'standalone'),
+        env: { 
+          ...process.env, 
+          NODE_ENV: 'production',
+          PORT: PORT.toString(),
+          HOSTNAME: 'localhost',
+          USER_DATA_PATH: dataPath
+        },
+        stdio: 'pipe'
+      });
+    }
 
     nextServer.stdout.on('data', (data) => {
       console.log(`Next.js: ${data}`);

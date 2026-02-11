@@ -4,6 +4,7 @@
 const nextConfig = {
   // The "experimental.turbo: false" option was removed as it was causing a build error.
   // Turbopack is primarily invoked via the CLI for the dev server.
+  output: 'standalone',
   typescript: {
     ignoreBuildErrors: true,
   },
